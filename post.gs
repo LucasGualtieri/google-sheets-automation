@@ -20,7 +20,15 @@ function writeRow(row) {
 	const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
 	const range = sheet.getRange(2, 1, 1, Object.keys(row).length);
 	range.insertCells(SpreadsheetApp.Dimension.ROWS);
-	range.setValues([Object.values(row)]);
+	range.setValues([[
+		row.expenseName,
+		row.value,
+		row.date,
+		row.paymentMethod,
+		row.expenseDescription,
+		row.expenseCategory,
+		row.note,
+	]]);
 }
 
 function buildRow(notification) {
@@ -54,7 +62,7 @@ function resolveCategoryAndDescription(expenseName) {
 		}
 	}
 
-	return { expenseCategory: "" };
+	return { expenseDescription: "" };
 }
 
 runTests();
