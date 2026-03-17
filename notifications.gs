@@ -38,7 +38,7 @@ const CAJU_NOTIFICATIONS = {
 }
 
 const CATEGORY_MAP = {
-	"Uber / 99": ["Uber", "99"],
+	"Uber / 99 Pop": ["Uber", "99"],
 	"Alimentação": ["iFood", "Ifood", "Restaurante"],
 	"Assinaturas": ["Google Storage"]
 };

@@ -26,7 +26,7 @@ function testNuPay() {
 		expenseName: "Uber TESTE",
 		value: -16.57,
 		paymentMethod: "Crédito",
-		expenseDescription: "Uber / 99",
+		expenseDescription: "Uber / 99 Pop",
 	});
 
 	compare(buildRow({
@@ -37,7 +37,7 @@ function testNuPay() {
 		expenseName: "Uber TESTE",
 		value: -16.57,
 		paymentMethod: "Débito / Pix",
-		expenseDescription: "Uber / 99",
+		expenseDescription: "Uber / 99 Pop",
 	});
 }
 
