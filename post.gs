@@ -3,59 +3,11 @@
 // NOTE - Google Script não suporta console.assert(), mas pra testar é melhor usar!
 const USING_ASSERT = true;
 const assert = USING_ASSERT ? console.assert : custom_assert;
+
 // NOTE - Set pra true se quiser parar no primeiro erro quando testando direto no Google Script
 const ASSERT_ERROR_THROWS_EXCEPTION = false;
 
 const SHEET_NAME = "Gastos de 17/02 à 17/03 Novo";
-
-// TODO - Consertar essa função
-// function getSheetName() {
-// 	const now = new Date();
-// 	const from = Utilities.formatDate(now, "GMT-3", "dd/MM");
-// 	const next = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
-// 	const to = Utilities.formatDate(next, "GMT-3", "dd/MM");
-// 	return `Gastos de ${from} à ${to}`;
-// }
-
-const REGEX = {
-	brlValue: /R\$ (\d+,\d{2})/,
-};
-
-const ROW_DEFAULTS = {
-	expenseName: "No name assigned",
-	value: 0.0,
-	paymentMethod: "No payment method assigned",
-	expenseDescription: "",
-	expenseCategory: "",
-	note: "Added automatically.",
-};
-
-const NU_NOTIFICATIONS = {
-	transferenciaReembolso: {
-		title: /(Transferência recebida|Reembolso recebido pelo Pix)/,
-		body: /Você recebeu um(?:a)? (transferência|reembolso) de R\$ (\d+,\d{2}) de (.+)\./,
-	},
-	estorno: {
-		title: /Estorno/,
-		body: /A compra em (.+) no valor de R\$ (\d+,\d{2}) foi estornada./,
-	},
-	compraNuPayCredito: {
-		title: /Compra com NuPay de R\$ (\d+,\d{2})/,
-		body: /Compra (?:em \d+x )?no (crédito|débito)(?: sem juros)? APROVADA em (.+)\./i,
-	},
-};
-
-const CATEGORY_MAP = {
-	"Uber / 99": ["Uber", "99"],
-	"Alimentação": ["iFood", "Ifood"],
-	"Assinaturas": ["Google Storage"]
-};
-
-const HANDLERS = [
-	NuReembolsoTransferencia,
-	NuEstorno,
-	CompraNuCreditoDebito,
-];
 
 // ─── Entry Point ─────────────────────────────────────────────────────────────
 
@@ -107,5 +59,19 @@ function row(notification, handlerFunction) {
 		...ROW_DEFAULTS,
 		date: new Date(),
 		...handler,
+		...resolveCategoryAndDescription(handler.expenseName ?? "")
 	};
 }
+
+function resolveCategoryAndDescription(expenseName) {
+
+	for (const [category, names] of Object.entries(CATEGORY_MAP)) {
+		if (names.some(name => expenseName.includes(name))) {
+			return { expenseCategory: category };
+		}
+	}
+
+	return { expenseCategory: "" };
+}
+
+runTests();

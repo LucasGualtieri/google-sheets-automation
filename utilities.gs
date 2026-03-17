@@ -1,3 +1,12 @@
+// TODO - Consertar essa função
+function getSheetName() {
+	const now = new Date();
+	const from = Utilities.formatDate(now, "GMT-3", "dd/MM");
+	const next = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+	const to = Utilities.formatDate(next, "GMT-3", "dd/MM");
+	return `Gastos de ${from} à ${to}`;
+}
+
 function brlToFloat(value) {
 	return parseFloat(value.replace(",", "."));
 }

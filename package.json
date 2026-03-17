@@ -8,7 +8,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node -e \"$(cat utilities.gs notifications.gs tests.gs post.gs)\""
+    "test": "node -e \"$(cat utilities.gs notifications.gs tests.gs configs.gs post.gs)\""
   },
   "keywords": [],
   "author": "",

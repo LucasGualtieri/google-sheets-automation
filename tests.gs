@@ -44,15 +44,15 @@ function testNuPay() {
 
 function testCaju() {
 
-	// compare(buildRow({
-	// 	title: "Pagamento aprovado",
-	// 	body: "Compra de R$ 13,50 APROVADA em Restaurante Uni TESTE no CRÉDITO. Use VOUCHER no próximo pagamento.",
-	// 	app_name: "Caju"
-	// }), {
-	// 	expenseName: "Restaurante Uni TESTE",
-	// 	value: -13.50,
-	// 	paymentMethod: "Caju",
-	// });
+	compare(buildRow({
+		title: "Pagamento aprovado",
+		body: "Compra de R$ 13,50 APROVADA em Restaurante Uni TESTE no CRÉDITO. Use VOUCHER no próximo pagamento.",
+		app_name: "Caju"
+	}), {
+		expenseName: "Restaurante Uni TESTE",
+		value: -13.50,
+		paymentMethod: "Caju",
+	});
 }
 
 function testIncoming() {
@@ -90,13 +90,13 @@ function testIncoming() {
 
 function testPixAgendado() {
 
-	// compare(buildRow({
-	// 	title: "Pix agendado enviado com sucesso ✅",
-	// 	body: "A transferência de R$ 0,01 para Fulano de Teste foi feita. Clique aqui para ver o comprovante.",
-	// 	app_name: "Nu"
-	// }), {
-	// 	expenseName: "Pix para Fulano de Teste",
-	// 	value: -0.01,
-	// 	paymentMethod: "Débito / Pix",
-	// });
+	compare(buildRow({
+		title: "Pix agendado enviado com sucesso ✅",
+		body: "A transferência de R$ 0,01 para Fulano de Teste foi feita. Clique aqui para ver o comprovante.",
+		app_name: "Nu"
+	}), {
+		expenseName: "Pix para Fulano de Teste",
+		value: -0.01,
+		paymentMethod: "Débito / Pix",
+	});
 }
