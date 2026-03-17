@@ -2,7 +2,7 @@ function NuReembolsoTransferencia(notification) {
 
 	const titleMatch = notification.title.match(NU_NOTIFICATIONS.transferenciaReembolso.title);
 	const bodyMatch = notification.body.match(NU_NOTIFICATIONS.transferenciaReembolso.body);
-	
+
 	if (!titleMatch || !bodyMatch) return null;
 
 	return {
@@ -13,12 +13,12 @@ function NuReembolsoTransferencia(notification) {
 }
 
 function NuEstorno(notification) {
-	
+
 	const titleMatch = notification.title.match(NU_NOTIFICATIONS.estorno.title);
 	const bodyMatch = notification.body.match(NU_NOTIFICATIONS.estorno.body);
-	
+
 	if (!titleMatch || !bodyMatch) return null;
-	
+
 	return {
 		value: brlToFloat(bodyMatch[2]),
 		expenseName: `Estorno em ${bodyMatch[1]}`,
@@ -30,7 +30,7 @@ function CompraNuCreditoDebito(notification) {
 
 	const titleMatch = notification.title.match(NU_NOTIFICATIONS.compraNuPayCredito.title);
 	const bodyMatch = notification.body.match(NU_NOTIFICATIONS.compraNuPayCredito.body);
-	
+
 	if (!titleMatch || !bodyMatch) return null;
 
 	return {
@@ -48,6 +48,6 @@ function resolveCategoryAndDescription(expenseName) {
 			return { expenseCategory: category };
 		}
 	}
-	
+
 	return { expenseCategory: "" };
 }

@@ -1,3 +1,5 @@
+// https://claude.ai/chat/a4a70733-b44f-4bba-b5e5-87cb84b1af4e
+
 // NOTE - Google Script não suporta console.assert(), mas pra testar é melhor usar!
 const USING_ASSERT = true;
 const assert = USING_ASSERT ? console.assert : custom_assert;
