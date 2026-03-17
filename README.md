@@ -22,7 +22,8 @@ Notificação → HTTP POST → doPost() → handler → writeRow() → Google S
 ## Estrutura do projeto
 
 ```
-post.gs           — Entry point, constantes, lógica de construção de linhas
+post.gs           — Entry point e lógica de construção de linhas
+configs.gs        — Configurações globais (SHEET_NAME, assert, constantes)
 notifications.gs  — Handlers para cada tipo de notificação
 utilities.gs      — Funções utilitárias (brlToFloat, compare, etc.)
 tests.gs          — Casos de teste, chamados via runTests()
@@ -82,7 +83,7 @@ npm test
 
 Concatena todos os arquivos `.gs` na ordem correta e os executa com Node. Resultados aparecem no console; falhas mostram um diff entre o esperado e o recebido.
 
-> O test runner funciona carregando `utilities.gs` → `notifications.gs` → `tests.gs` → `post.gs` juntos, reproduzindo o comportamento do GAS que trata todos os arquivos como um escopo global único.
+> O test runner funciona carregando `utilities.gs` → `notifications.gs` → `tests.gs` → `configs.gs` → `post.gs` juntos, reproduzindo o comportamento do GAS que trata todos os arquivos como um escopo global único.
 
 ---
 
@@ -94,7 +95,7 @@ O GAS trata todos os arquivos `.gs` do projeto como um único escopo global — 
 2. Adicione-o ao comando `cat` no script `test` do `package.json`, na ordem correta (antes de qualquer arquivo que dependa dele):
 
 ```json
-"test": "node -e \"$(cat utilities.gs notifications.gs seuarquivo.gs tests.gs post.gs)\""
+"test": "node -e \"$(cat utilities.gs notifications.gs seuarquivo.gs tests.gs configs.gs post.gs)\""
 ```
 
 3. Rode `clasp push` para enviar ao GAS.
@@ -132,7 +133,7 @@ function MeuNovoHandler(notification) {
 }
 ```
 
-O objeto retornado é mesclado com `ROW_DEFAULTS` — só é necessário especificar os campos que quer sobrescrever. Campos disponíveis:
+O objeto retornado é mesclado com `ROW_DEFAULTS` — só é necessário especificar os campos que quer sobrescrever. Campos disponíveis por padrão, mas você pode modificá-los para que faça sentido com a sua planilha:
 
 | Campo                | Padrão                         |
 |----------------------|--------------------------------|
