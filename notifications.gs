@@ -38,9 +38,21 @@ const CAJU_NOTIFICATIONS = {
 }
 
 const CATEGORY_MAP = {
-	"Uber / 99 Pop": ["Uber", "99"],
-	"Alimentação": ["iFood", "Ifood", "Restaurante"],
-	"Assinaturas": ["Google Storage"]
+	uber99Pop: {
+		expenseDescription: "Uber / 99 Pop",
+		expenseCategory: "Variable Expense",
+		names: ["Uber", "99"]
+	},
+	alimentacao: {
+		expenseDescription: "Alimentação",
+		expenseCategory: "",
+		names: ["iFood", "Ifood", "Restaurante"],
+	},
+	assinaturas: {
+		expenseDescription: "Assinaturas",
+		expenseCategory: "Fixed Expense",
+		names: ["Google Storage"],
+	},
 };
 
 const HANDLERS = [

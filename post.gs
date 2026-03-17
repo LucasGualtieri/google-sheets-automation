@@ -56,13 +56,13 @@ function row(notification, handlerFunction) {
 
 function resolveCategoryAndDescription(expenseName) {
 
-	for (const [category, names] of Object.entries(CATEGORY_MAP)) {
+	for (const { expenseCategory, expenseDescription, names } of Object.values(CATEGORY_MAP)) {
 		if (names.some(name => expenseName.includes(name))) {
-			return { expenseDescription: category };
+			return { expenseCategory, expenseDescription };
 		}
 	}
 
-	return { expenseDescription: "" };
+	return { expenseCategory: "", expenseDescription: "" };
 }
 
 runTests();
