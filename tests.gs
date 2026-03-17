@@ -15,7 +15,7 @@ function testNuPay() {
 		expenseName: "iFood TESTE",
 		value: -16.57,
 		paymentMethod: "Crédito",
-		expenseCategory: "Alimentação",
+		expenseDescription: "Alimentação",
 	});
 
 	compare(buildRow({
@@ -26,7 +26,7 @@ function testNuPay() {
 		expenseName: "Uber TESTE",
 		value: -16.57,
 		paymentMethod: "Crédito",
-		expenseCategory: "Uber / 99",
+		expenseDescription: "Uber / 99",
 	});
 
 	compare(buildRow({
@@ -37,7 +37,7 @@ function testNuPay() {
 		expenseName: "Uber TESTE",
 		value: -16.57,
 		paymentMethod: "Débito / Pix",
-		expenseCategory: "Uber / 99",
+		expenseDescription: "Uber / 99",
 	});
 }
 
@@ -64,7 +64,7 @@ function testCaju() {
 		expenseName: "Restaurante Uni TESTE",
 		value: -13.50,
 		paymentMethod: "Caju",
-		expenseCategory: "Alimentação",
+		expenseDescription: "Alimentação",
 	});
 }
 

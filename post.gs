@@ -58,7 +58,7 @@ function resolveCategoryAndDescription(expenseName) {
 
 	for (const [category, names] of Object.entries(CATEGORY_MAP)) {
 		if (names.some(name => expenseName.includes(name))) {
-			return { expenseCategory: category };
+			return { expenseDescription: category };
 		}
 	}
 
