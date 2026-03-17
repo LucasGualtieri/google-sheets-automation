@@ -1,9 +1,8 @@
 function runTests() {
-
 	testNuPay();
-	// testCaju();
+	testCaju();
 	testIncoming();
-	// testPixAgendado();
+	testPixAgendado();
 }
 
 function testNuPay() {
@@ -42,6 +41,19 @@ function testNuPay() {
 	});
 }
 
+function testPixAgendado() {
+
+	compare(buildRow({
+		title: "Pix agendado enviado com sucesso ✅",
+		body: "A transferência de R$ 0,01 para Fulano de Teste foi feita. Clique aqui para ver o comprovante.",
+		app_name: "Nu"
+	}), {
+		expenseName: "Pix para Fulano de Teste",
+		value: -0.01,
+		paymentMethod: "Débito / Pix",
+	});
+}
+
 function testCaju() {
 
 	compare(buildRow({
@@ -52,6 +64,7 @@ function testCaju() {
 		expenseName: "Restaurante Uni TESTE",
 		value: -13.50,
 		paymentMethod: "Caju",
+		expenseCategory: "Alimentação",
 	});
 }
 
@@ -85,18 +98,5 @@ function testIncoming() {
 		expenseName: "Estorno em Uber TESTE",
 		value: 12.50,
 		paymentMethod: "Crédito",
-	});
-}
-
-function testPixAgendado() {
-
-	compare(buildRow({
-		title: "Pix agendado enviado com sucesso ✅",
-		body: "A transferência de R$ 0,01 para Fulano de Teste foi feita. Clique aqui para ver o comprovante.",
-		app_name: "Nu"
-	}), {
-		expenseName: "Pix para Fulano de Teste",
-		value: -0.01,
-		paymentMethod: "Débito / Pix",
 	});
 }
