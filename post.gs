@@ -109,5 +109,3 @@ function row(notification, handlerFunction) {
 		...handler,
 	};
 }
-
-runTests();
