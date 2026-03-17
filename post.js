@@ -1,6 +1,6 @@
 const SHEET_NAME = "Gastos de 17/02 à 17/03 Novo";
 
-// TODO - Concertar essa função
+// TODO - Consertar essa função
 // function getSheetName() {
 // 	const now = new Date();
 // 	const from = Utilities.formatDate(now, "GMT-3", "dd/MM");
