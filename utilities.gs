@@ -8,7 +8,7 @@ function getSheetName() {
 }
 
 function brlToFloat(value) {
-	return parseFloat(value.replace(",", "."));
+	return parseFloat(value.replaceAll('.', '').replace(',', '.'));
 }
 
 function respondWithJSON(data) {
