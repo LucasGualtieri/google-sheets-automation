@@ -37,7 +37,7 @@ const NU_NOTIFICATIONS = {
 const CAJU_NOTIFICATIONS = {
 	pagamento: {
 		title: /Pagamento aprovado/,
-		body: new RegExp(`Compra de R\\$ (${REGEX.brlValue}) APROVADA em (.+) no CRÉDITO. Use VOUCHER no próximo pagamento.`),
+		body: new RegExp(`Compra de R\\$ (${REGEX.brlValue}) APROVADA em (.+) no CRÉDITO.`),
 	}
 }
 
