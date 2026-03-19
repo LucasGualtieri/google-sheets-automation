@@ -75,9 +75,14 @@ function NuReembolsoTransferencia(notification) {
 
 	if (!titleMatch || !bodyMatch) return null;
 
+	let transfReembolso = capitalize(bodyMatch[1]);
+	if (transfReembolso == "Transferência") {
+		transfReembolso = "Pix"
+	}
+
 	return {
 		value: brlToFloat(bodyMatch[2]),
-		expenseName: `${capitalize(bodyMatch[1])} de ${bodyMatch[3]}`,
+		expenseName: `${transfReembolso} de ${bodyMatch[3]}`,
 		paymentMethod: "Débito / Pix",
 	};
 }

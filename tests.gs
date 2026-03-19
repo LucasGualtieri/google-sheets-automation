@@ -82,7 +82,7 @@ function testIncoming() {
 		title: "Transferência recebida",
 		body: "Você recebeu uma transferência de R$ 1.300,35 de Fulano de Teste.",
 	}), {
-		expenseName: "Transferência de Fulano de Teste",
+		expenseName: "Pix de Fulano de Teste",
 		value: 1300.35,
 		paymentMethod: "Débito / Pix",
 	});
