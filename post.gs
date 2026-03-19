@@ -56,8 +56,10 @@ function row(notification, handlerFunction) {
 
 function resolveCategoryAndDescription(expenseName) {
 
+	const lower = expenseName.toLowerCase();
+
 	for (const { expenseCategory, expenseDescription, names } of Object.values(CATEGORY_MAP)) {
-		if (names.some(name => expenseName.includes(name))) {
+		if (names.some(name => lower.includes(name.toLowerCase()))) {
 			return { expenseCategory, expenseDescription };
 		}
 	}

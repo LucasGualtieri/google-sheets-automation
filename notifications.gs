@@ -45,12 +45,12 @@ const CATEGORY_MAP = {
 	uber99Pop: {
 		expenseDescription: "Uber / 99 Pop",
 		expenseCategory: "Variable Expense",
-		names: ["Uber", "99"]
+		names: ["uber", "99"]
 	},
 	alimentacao: {
 		expenseDescription: "Alimentação",
 		expenseCategory: "",
-		names: ["iFood", "Ifood", "Restaurante"],
+		names: ["lanches", "ifood", "restaurante"],
 	},
 	assinaturas: {
 		expenseDescription: "Assinaturas",
