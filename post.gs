@@ -1,9 +1,9 @@
-function doPost(e) {
+async function doPost(e) {
 
 	try {
 		const notification = JSON.parse(e.postData.contents);
 
-		const row = buildRow(notification);
+		const row = await buildRow(notification);
 		if (!row) return respondWithJSON({ status: "ignored" });
 
 		writeRow(row);
@@ -31,17 +31,17 @@ function writeRow(row) {
 	]]);
 }
 
-function buildRow(notification) {
+async function buildRow(notification) {
 
 	for (const handler of HANDLERS) {
-		const rowData = row(notification, handler);
+		const rowData = await row(notification, handler);
 		if (rowData) return rowData;
 	}
 	
 	return null;
 }
 
-function row(notification, handlerFunction) {
+async function row(notification, handlerFunction) {
 	
 	const handler = handlerFunction(notification);
 	if (!handler) return null;
@@ -50,16 +50,27 @@ function row(notification, handlerFunction) {
 		...ROW_DEFAULTS,
 		date: new Date(),
 		...handler,
-		...resolveCategoryAndDescription(handler.expenseName ?? "")
+		...(await resolveCategoryAndDescription(handler.expenseName ?? "", notification.title ?? "")),
 	};
 }
 
-function resolveCategoryAndDescription(expenseName) {
+async function resolveCategoryAndDescription(expenseName, notificationTitle) {
+
+	try {
+		const match = await classifyWithGemini(expenseName, notificationTitle);
+		if (match) {
+			return {
+				expenseDescription: match.expenseDescription,
+				expenseCategory: match.expenseCategory,
+			};
+		}
+	} catch (err) {
+		console.log("Gemini classification failed: " + err.toString());
+	}
 
 	const lower = expenseName.toLowerCase();
-
-	for (const { expenseCategory, expenseDescription, names } of Object.values(CATEGORY_MAP)) {
-		if (names.some(name => lower.includes(name.toLowerCase()))) {
+	for (const { expenseCategory, expenseDescription, names } of EXPENSE_CATEGORIES) {
+		if (names && names.some(name => lower.includes(name.toLowerCase()))) {
 			return { expenseCategory, expenseDescription };
 		}
 	}
@@ -67,4 +78,4 @@ function resolveCategoryAndDescription(expenseName) {
 	return { expenseCategory: "", expenseDescription: "" };
 }
 
-runTests();
+runTests().catch(err => console.error(err));

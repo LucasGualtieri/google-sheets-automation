@@ -41,23 +41,26 @@ const CAJU_NOTIFICATIONS = {
 	}
 }
 
-const CATEGORY_MAP = {
-	uber99Pop: {
+const EXPENSE_CATEGORIES = [
+	{
 		expenseDescription: "Uber / 99 Pop",
 		expenseCategory: "Variable Expense",
-		names: ["uber", "99"]
+		hint: "Serviços de transporte e corridas como Uber, 99, Cabify",
+		names: ["uber", "99"],
 	},
-	alimentacao: {
+	{
 		expenseDescription: "Alimentação",
 		expenseCategory: "",
+		hint: "Delivery de comida, restaurantes, lanchonetes, padarias, iFood",
 		names: ["lanches", "ifood", "restaurante"],
 	},
-	assinaturas: {
+	{
 		expenseDescription: "Assinaturas",
 		expenseCategory: "Fixed Expense",
+		hint: "Assinaturas e serviços recorrentes como streaming, armazenamento em nuvem, software",
 		names: ["Google Storage"],
 	},
-};
+];
 
 const HANDLERS = [
 	NuReembolsoTransferencia,
