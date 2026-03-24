@@ -37,6 +37,16 @@ function testNuPay() {
 		paymentMethod: "Débito / Pix",
 		expenseDescription: "Uber / 99 Pop",
 	});
+
+	compare(buildRow({
+		title: "Compra com NuPay de R$ 16,57",
+		body: "Compra no Crédito APROVADA em METRO BH*Bilhetagem Di TESTE.",
+	}), {
+		expenseName: "METRO BH*Bilhetagem Di TESTE",
+		value: -16.57,
+		paymentMethod: "Crédito",
+		expenseDescription: "Metrô / Ônibus",
+	});
 }
 
 function testNu() {
