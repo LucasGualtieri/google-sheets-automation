@@ -21,9 +21,9 @@ async function testGemini() {
 
 	compare(await buildRow({
 		title: "Pagamento aprovado",
-		body: "Compra de R$ 13,50 APROVADA em Uber Eats, de papar, é eats, não Uber normal!! no CRÉDITO. Use VOUCHER no próximo pagamento.",
+		body: "Compra de R$ 13,50 APROVADA em Uber Eats no CRÉDITO. Use VOUCHER no próximo pagamento.",
 	}), {
-		expenseName: "Uber Eats, de papar, é eats, não Uber normal!!",
+		expenseName: "Uber Eats",
 		value: -13.50,
 		paymentMethod: "Caju",
 		expenseDescription: "Alimentação",
