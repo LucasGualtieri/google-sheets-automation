@@ -42,7 +42,7 @@ function testNuPay() {
 		title: "Compra com NuPay de R$ 16,57",
 		body: "Compra no Crédito APROVADA em METRO BH*Bilhetagem Di TESTE.",
 	}), {
-		expenseName: "METRO BH*Bilhetagem Di TESTE",
+		expenseName: "Passagem Metrô",
 		value: -16.57,
 		paymentMethod: "Crédito",
 		expenseDescription: "Metrô / Ônibus",
@@ -80,6 +80,16 @@ function testCaju() {
 		body: "Compra de R$ 13,50 APROVADA em Restaurante Uni TESTE no CRÉDITO. Use VOUCHER no próximo pagamento.",
 	}), {
 		expenseName: "Restaurante Uni TESTE",
+		value: -13.50,
+		paymentMethod: "Caju",
+		expenseDescription: "Alimentação",
+	});
+
+	compare(buildRow({
+		title: "Pagamento aprovado",
+		body: "Compra de R$ 13,50 APROVADA em Viny Lanches TESTE no CRÉDITO. Use VOUCHER no próximo pagamento.",
+	}), {
+		expenseName: "Trailer PUC",
 		value: -13.50,
 		paymentMethod: "Caju",
 		expenseDescription: "Alimentação",

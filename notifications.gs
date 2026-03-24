@@ -41,7 +41,7 @@ const CAJU_NOTIFICATIONS = {
 	}
 }
 
-const CATEGORY_MAP = [ 
+const CATEGORY_MAP = [
 	{
 		expenseDescription: "Uber / 99 Pop",
 		expenseCategory: "Variable Expense",
@@ -59,9 +59,20 @@ const CATEGORY_MAP = [
 	},
 	{
 		expenseDescription: "Metrô / Ônibus",
-		names: ["Metro"],
+		names: ["metro bh*bilhetagem di"],
 	},
- ];
+];
+
+const COMMON_NAME_MAP = [
+	{
+		expenseName: "Passagem Metrô",
+		names: ["metro bh*bilhetagem di"],
+	},
+	{
+		expenseName: "Trailer PUC",
+		names: ["Viny Lanches"],
+	},
+];
 
 const HANDLERS = [
 	NuReembolsoTransferencia,

@@ -45,13 +45,28 @@ function row(notification, handlerFunction) {
 	
 	const handler = handlerFunction(notification);
 	if (!handler) return null;
+	const expenseName = resolveCommonExpenseName(handler.expenseName ?? "");
 
 	return {
 		...ROW_DEFAULTS,
 		date: new Date(),
 		...handler,
-		...resolveCategoryAndDescription(handler.expenseName ?? "")
+		expenseName,
+		...resolveCategoryAndDescription(handler.expenseName)
 	};
+}
+
+function resolveCommonExpenseName(expenseName) {
+
+	const lower = expenseName.toLowerCase();
+
+	for (const { expenseName: normalizedExpenseName, names } of Object.values(COMMON_NAME_MAP)) {
+		if (names.some(name => lower.includes(name.toLowerCase()))) {
+			return normalizedExpenseName;
+		}
+	}
+
+	return expenseName;
 }
 
 function resolveCategoryAndDescription(expenseName) {
