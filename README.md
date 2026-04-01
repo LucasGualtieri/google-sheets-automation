@@ -2,7 +2,7 @@
 
 Projeto Google Apps Script que recebe notificações do celular via webhook e registra gastos automaticamente em uma planilha do Google Sheets.
 
-Quando uma notificação chega (ex: compra no Nubank, transferência Pix, reembolso), o script faz o parse e escreve uma linha estruturada na planilha — com nome do gasto, valor, método de pagamento e categoria.
+Quando uma notificação chega (ex: compra no Nubank, transferência Pix, reembolso), o script faz o parse e escreve uma linha estruturada na planilha — com transação, valor, data/hora, origem dos fundos, categoria e tipo (fixo/variável, etc.).
 
 ---
 
@@ -148,7 +148,7 @@ A lógica vive em `scripts/notifications.gs`: constantes de regex (`NU_NOTIFICAT
 Fluxo recomendado:
 
 1. **Regex / estrutura** — Adicione entradas no mapa certo (ex.: `NU_NOTIFICATIONS` para Nubank), reutilizando `REGEX.brlValue` quando fizer sentido. Para outro app, um mapa novo (como `CAJU_NOTIFICATIONS`) mantém o mesmo estilo.
-2. **Categorização** — Se precisar normalizar nome ou categoria/descrição pela planilha, estenda `COMMON_NAME_MAP` e/ou `CATEGORY_MAP` conforme os handlers existentes.
+2. **Categorização** — Se precisar normalizar nome da transação ou categoria/tipo pela planilha, estenda `COMMON_NAME_MAP` e/ou `CATEGORY_MAP` conforme os handlers existentes.
 3. **Handler** — Inclua uma nova função no array `HANDLERS` em `notifications.gs` (no mesmo padrão dos existentes: `NuEstorno`, `CompraNuPay`, `CajuPagamento`, etc.).
 4. **Testes** — Para **cada** novo handler, adicione pelo menos um `compare(buildRow(...), { ... })` em `scripts/tests.gs` (em uma função `test...` e chame-a a partir de `runTests()`, como nos testes atuais). Assim o comportamento fica fixado e o `npm test` cobre o caso.
 
@@ -170,9 +170,9 @@ MinhaNovaRegra = (notification) => {
 	if (!titleMatch || !bodyMatch) return null;
 
 	return {
-		value: -brlToFloat(bodyMatch[1]),
-		expenseName: bodyMatch[2],
-		paymentMethod: "Crédito",
+		amount: -brlToFloat(bodyMatch[1]),
+		transaction: bodyMatch[2],
+		source: "Crédito",
 	};
 },
 ```
@@ -188,9 +188,9 @@ function testMinhaNovaRegra() {
 			app_name: "Nu",
 		}),
 		{
-			expenseName: "Nome esperado",
-			value: -16.57,
-			paymentMethod: "Crédito",
+			transaction: "Nome esperado",
+			amount: -16.57,
+			source: "Crédito",
 		}
 	);
 }
@@ -199,16 +199,18 @@ function testMinhaNovaRegra() {
 //   testMinhaNovaRegra();
 ```
 
-O objeto retornado pelo handler é mesclado com `ROW_DEFAULTS` e com o resultado de `resolveCategoryAndDescription` em `post.gs` — em geral você só precisa dos campos que quer sobrescrever:
+O objeto retornado pelo handler é mesclado com `ROW_DEFAULTS` e com o resultado de `resolveCategoryAndType` em `post.gs` — em geral você só precisa dos campos que quer sobrescrever:
 
-| Campo                | Padrão                         |
-|----------------------|--------------------------------|
-| `expenseName`        | `"No name assigned"`           |
-| `value`              | `0.0`                          |
-| `paymentMethod`      | `"No payment method assigned"` |
-| `expenseDescription` | `""`                           |
-| `expenseCategory`    | `""`                           |
-| `note`               | `"Added automatically."`       |
+| Campo          | Padrão                         |
+|----------------|--------------------------------|
+| `transaction`  | `"No transaction assigned"`  |
+| `amount`       | `0.0`                          |
+| `source`       | `"No source assigned"`         |
+| `category`     | `""`                           |
+| `type`         | `""`                           |
+| `notes`        | `"Added automatically."`       |
+
+`buildRow` também define `dateTime` (data/hora do recebimento). A ordem em `writeRow` segue as colunas da planilha: **Transaction**, **Amount**, **Date/Time**, **Source**, **Category**, **Type**, **Notes**.
 
 Depois: `npm test`, `clasp push` e, se usar deploy versionado, `clasp deploy` ou o script de deploy com `DEPLOYMENT_ID`.
 

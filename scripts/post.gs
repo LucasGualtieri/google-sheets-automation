@@ -21,13 +21,13 @@ function writeRow(row) {
 	const range = sheet.getRange(2, 1, 1, Object.keys(row).length);
 	range.insertCells(SpreadsheetApp.Dimension.ROWS);
 	range.setValues([[
-		row.expenseName,
-		row.value,
-		row.date,
-		row.paymentMethod,
-		row.expenseDescription,
-		row.expenseCategory,
-		row.note,
+		row.transaction,
+		row.amount,
+		row.dateTime,
+		row.source,
+		row.category,
+		row.type,
+		row.notes,
 	]]);
 }
 
@@ -45,41 +45,41 @@ function row(notification, handlerFunction) {
 	
 	const handler = handlerFunction(notification);
 	if (!handler) return null;
-	const expenseName = resolveCommonExpenseName(handler.expenseName ?? "");
+	const transaction = resolveCommonTransactionName(handler.transaction ?? "");
 
 	return {
 		...ROW_DEFAULTS,
-		date: new Date(),
+		dateTime: new Date(),
 		...handler,
-		expenseName,
-		...resolveCategoryAndDescription(handler.expenseName)
+		transaction,
+		...resolveCategoryAndType(handler.transaction)
 	};
 }
 
-function resolveCommonExpenseName(expenseName) {
+function resolveCommonTransactionName(transactionName) {
 
-	const lower = expenseName.toLowerCase();
+	const lower = transactionName.toLowerCase();
 
-	for (const { expectedExpenseName: normalizedExpenseName, names } of Object.values(COMMON_NAME_MAP)) {
-		if (names.some(name => lower.includes(name.toLowerCase()))) {
-			return normalizedExpenseName;
+	for (const { expectedTransaction: normalizedTransaction, gotTransactionNames } of Object.values(COMMON_NAME_MAP)) {
+		if (gotTransactionNames.some(name => lower.includes(name.toLowerCase()))) {
+			return normalizedTransaction;
 		}
 	}
 
-	return expenseName;
+	return transactionName;
 }
 
-function resolveCategoryAndDescription(expenseName) {
+function resolveCategoryAndType(transactionName) {
 
-	const lower = expenseName.toLowerCase();
+	const lower = transactionName.toLowerCase();
 
-	for (const { expenseCategory, expenseDescription, names } of Object.values(CATEGORY_MAP)) {
+	for (const { type, category, names } of Object.values(CATEGORY_MAP)) {
 		if (names.some(name => lower.includes(name.toLowerCase()))) {
-			return { expenseCategory, expenseDescription };
+			return { type, category };
 		}
 	}
 
-	return { expenseCategory: "", expenseDescription: "" };
+	return { type: "", category: "" };
 }
 
 runTests();

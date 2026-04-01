@@ -14,10 +14,10 @@ function testNuPay() {
 			body: "Compra em 1x no CRÉDITO sem juros APROVADA em iFood TESTE. kasldfsakdljfh",
 		}),
 		{
-			expenseName: "iFood TESTE",
-			value: -16.57,
-			paymentMethod: "Crédito",
-			expenseDescription: "Alimentação",
+			transaction: "iFood TESTE",
+			amount: -16.57,
+			source: "Crédito",
+			category: "Alimentação",
 		}
 	);
 
@@ -27,10 +27,10 @@ function testNuPay() {
 			body: "Compra em 1x no crédito sem juros APROVADA em Uber TESTE.",
 		}),
 		{
-			expenseName: "Uber TESTE",
-			value: -16.57,
-			paymentMethod: "Crédito",
-			expenseDescription: "Uber / 99 Pop",
+			transaction: "Uber TESTE",
+			amount: -16.57,
+			source: "Crédito",
+			category: "Uber / 99 Pop",
 		}
 	);
 
@@ -40,10 +40,10 @@ function testNuPay() {
 			body: "Compra no Débito APROVADA em Uber TESTE.",
 		}),
 		{
-			expenseName: "Uber TESTE",
-			value: -16.57,
-			paymentMethod: "Débito / Pix",
-			expenseDescription: "Uber / 99 Pop",
+			transaction: "Uber TESTE",
+			amount: -16.57,
+			source: "Débito / Pix",
+			category: "Uber / 99 Pop",
 		}
 	);
 
@@ -53,10 +53,10 @@ function testNuPay() {
 			body: "Compra no Crédito APROVADA em METRO BH*Bilhetagem Di TESTE.",
 		}),
 		{
-			expenseName: "Passagem Metrô",
-			value: -16.57,
-			paymentMethod: "Crédito",
-			expenseDescription: "Metrô / Ônibus",
+			transaction: "Passagem Metrô",
+			amount: -16.57,
+			source: "Crédito",
+			category: "Metrô / Ônibus",
 		}
 	);
 }
@@ -69,9 +69,9 @@ function testNu() {
 			body: "Compra de R$ 21,98 APROVADA em AMAZON BR Teste para o cartão com final 0000.",
 		}),
 		{
-			expenseName: "AMAZON BR Teste",
-			value: -21.98,
-			paymentMethod: "Crédito",
+			transaction: "AMAZON BR Teste",
+			amount: -21.98,
+			source: "Crédito",
 		}
 	);
 }
@@ -84,9 +84,9 @@ function testPixAgendado() {
 			body: "A transferência de R$ 0,01 para Fulano de Teste foi feita. Clique aqui para ver o comprovante.",
 		}),
 		{
-			expenseName: "Pix para Fulano de Teste",
-			value: -0.01,
-			paymentMethod: "Débito / Pix",
+			transaction: "Pix para Fulano de Teste",
+			amount: -0.01,
+			source: "Débito / Pix",
 		}
 	);
 }
@@ -99,10 +99,10 @@ function testCaju() {
 			body: "Compra de R$ 13,50 APROVADA em Restaurante Uni TESTE no CRÉDITO. Use VOUCHER no próximo pagamento.",
 		}),
 		{
-			expenseName: "Restaurante Uni TESTE",
-			value: -13.50,
-			paymentMethod: "Caju",
-			expenseDescription: "Alimentação",
+			transaction: "Restaurante Uni TESTE",
+			amount: -13.50,
+			source: "Caju",
+			category: "Alimentação",
 		}
 	);
 
@@ -112,10 +112,10 @@ function testCaju() {
 			body: "Compra de R$ 13,50 APROVADA em Viny Lanches TESTE no CRÉDITO. Use VOUCHER no próximo pagamento.",
 		}),
 		{
-			expenseName: "Trailer PUC",
-			value: -13.50,
-			paymentMethod: "Caju",
-			expenseDescription: "Alimentação",
+			transaction: "Trailer PUC",
+			amount: -13.50,
+			source: "Caju",
+			category: "Alimentação",
 		}
 	);
 
@@ -125,9 +125,9 @@ function testCaju() {
 			body: "Oba! R$ 200,00 disponíveis no seu Caju. Aproveite!",
 		}),
 		{
-			expenseName: "Crédito Caju",
-			value: 200,
-			paymentMethod: "Caju",
+			transaction: "Crédito Caju",
+			amount: 200,
+			source: "Caju",
 		}
 	);
 }
@@ -140,9 +140,9 @@ function testIncoming() {
 			body: "Você recebeu uma transferência de R$ 1.300,35 de Fulano de Teste.",
 		}),
 		{
-			expenseName: "Pix de Fulano de Teste",
-			value: 1300.35,
-			paymentMethod: "Débito / Pix",
+			transaction: "Pix de Fulano de Teste",
+			amount: 1300.35,
+			source: "Débito / Pix",
 		}
 	);
 
@@ -152,9 +152,9 @@ function testIncoming() {
 			body: "Você recebeu uma transferência de R$ 1.800,00 de NEXOS DIGITAL T.",
 		}),
 		{
-			expenseName: "Salário Nexos",
-			value: 1800.00,
-			paymentMethod: "Débito / Pix",
+			transaction: "Salário Nexos",
+			amount: 1800.00,
+			source: "Débito / Pix",
 		}
 	);
 
@@ -164,9 +164,9 @@ function testIncoming() {
 			body: "Recebemos sua transferência de R$ 108,28.",
 		}),
 		{
-			expenseName: "Pix de Lucas Gualtieri",
-			value: 108.28,
-			paymentMethod: "Débito / Pix",
+			transaction: "Pix de Lucas Gualtieri",
+			amount: 108.28,
+			source: "Débito / Pix",
 		}
 	);
 
@@ -176,9 +176,9 @@ function testIncoming() {
 			body: "Você recebeu um reembolso de R$ 20,35 de Fulano de Teste.",
 		}),
 		{
-			expenseName: "Reembolso de Fulano de Teste",
-			value: 20.35,
-			paymentMethod: "Débito / Pix",
+			transaction: "Reembolso de Fulano de Teste",
+			amount: 20.35,
+			source: "Débito / Pix",
 		}
 	);
 
@@ -188,9 +188,9 @@ function testIncoming() {
 			body: "A compra em Uber TESTE no valor de R$ 12,50 foi estornada.",
 		}),
 		{
-			expenseName: "Estorno em Uber TESTE",
-			value: 12.50,
-			paymentMethod: "Crédito",
+			transaction: "Estorno em Uber TESTE",
+			amount: 12.50,
+			source: "Crédito",
 		}
 	);
 }

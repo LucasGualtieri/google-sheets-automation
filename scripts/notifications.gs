@@ -3,12 +3,12 @@ const REGEX = {
 };
 
 const ROW_DEFAULTS = {
-	expenseName: "No name assigned",
-	value: 0.0,
-	paymentMethod: "No payment method assigned",
-	expenseDescription: "",
-	expenseCategory: "",
-	note: "Added automatically.",
+	transaction: "No transaction assigned",
+	amount: 0.0,
+	source: "No source assigned",
+	category: "",
+	type: "",
+	notes: "Added automatically.",
 };
 
 const NU_NOTIFICATIONS = {
@@ -48,47 +48,48 @@ const CAJU_NOTIFICATIONS = {
 
 const CATEGORY_MAP = [
 	{
-		expenseDescription: "Uber / 99 Pop",
-		expenseCategory: "Variable Expense",
+		category: "Uber / 99 Pop",
+		type: "Variable Expense",
 		names: ["uber", "99"]
 	},
 	{
-		expenseDescription: "Academia",
-		expenseCategory: "Fixed Expense",
+		category: "Academia",
+		type: "Fixed Expense",
 		names: ["academia"]
 	},
 	{
-		expenseDescription: "Alimentação",
-		expenseCategory: "",
+		category: "Alimentação",
+		type: "",
 		names: ["lanches", "ifood", "restaurante"],
 	},
 	{
-		expenseDescription: "Assinaturas",
-		expenseCategory: "Fixed Expense",
+		category: "Assinaturas",
+		type: "Fixed Expense",
 		names: ["Google Storage"],
 	},
 	{
-		expenseDescription: "Metrô / Ônibus",
+		category: "Metrô / Ônibus",
+		type: "",
 		names: ["metro bh*bilhetagem di"],
 	},
 ];
 
 const COMMON_NAME_MAP = [
 	{
-		names: ["metro bh*bilhetagem di"],
-		expectedExpenseName: "Passagem Metrô",
+		gotTransactionNames: ["metro bh*bilhetagem di"],
+		expectedTransaction: "Passagem Metrô",
 	},
 	{
-		names: ["Viny Lanches"],
-		expectedExpenseName: "Trailer PUC",
+		gotTransactionNames: ["Viny Lanches"],
+		expectedTransaction: "Trailer PUC",
 	},
 	{
-		names: ["Nexos Digital"],
-		expectedExpenseName: "Salário Nexos",
+		gotTransactionNames: ["Nexos Digital"],
+		expectedTransaction: "Salário Nexos",
 	},
 	{
-		names: ["SUA ACADEMIA"],
-		expectedExpenseName: "Smart Fit",
+		gotTransactionNames: ["SUA ACADEMIA"],
+		expectedTransaction: "Smart Fit",
 	},
 ];
 
@@ -106,9 +107,9 @@ const HANDLERS = [
 		transfReembolso = transfReembolso == "Transferência" ? "Pix" : transfReembolso;
 
 		return {
-			value: brlToFloat(bodyMatch[2]),
-			expenseName: `${transfReembolso} de ${bodyMatch[3]}`,
-			paymentMethod: "Débito / Pix",
+			amount: brlToFloat(bodyMatch[2]),
+			transaction: `${transfReembolso} de ${bodyMatch[3]}`,
+			source: "Débito / Pix",
 		};
 	},
 
@@ -120,9 +121,9 @@ const HANDLERS = [
 		if (!titleMatch || !bodyMatch) return null;
 
 		return {
-			value: brlToFloat(bodyMatch[1]),
-			expenseName: "Pix de Lucas Gualtieri",
-			paymentMethod: "Débito / Pix",
+			amount: brlToFloat(bodyMatch[1]),
+			transaction: "Pix de Lucas Gualtieri",
+			source: "Débito / Pix",
 		};
 	},
 
@@ -134,9 +135,9 @@ const HANDLERS = [
 		if (!titleMatch || !bodyMatch) return null;
 
 		return {
-			value: brlToFloat(bodyMatch[2]),
-			expenseName: `Estorno em ${bodyMatch[1]}`,
-			paymentMethod: "Crédito",
+			amount: brlToFloat(bodyMatch[2]),
+			transaction: `Estorno em ${bodyMatch[1]}`,
+			source: "Crédito",
 		};
 	},
 
@@ -150,9 +151,9 @@ const HANDLERS = [
 		const paymentMathod = capitalize(bodyMatch[1]);
 		
 		return {
-			value: -brlToFloat(titleMatch[1]),
-			expenseName: bodyMatch[2],
-			paymentMethod: paymentMathod == "Débito" ? "Débito / Pix" : paymentMathod,
+			amount: -brlToFloat(titleMatch[1]),
+			transaction: bodyMatch[2],
+			source: paymentMathod == "Débito" ? "Débito / Pix" : paymentMathod,
 		};
 	},
 
@@ -163,12 +164,12 @@ const HANDLERS = [
 
 		if (!titleMatch || !bodyMatch) return null;
 
-		const paymentMethod = capitalize(titleMatch[1]);
+		const source = capitalize(titleMatch[1]);
 
 		return {
-			value: -brlToFloat(bodyMatch[1]),
-			expenseName: bodyMatch[2],
-			paymentMethod: paymentMethod  == "Débito" ? "Débito / Pix" : paymentMethod,
+			amount: -brlToFloat(bodyMatch[1]),
+			transaction: bodyMatch[2],
+			source: source == "Débito" ? "Débito / Pix" : source,
 		};
 	},
 
@@ -180,9 +181,9 @@ const HANDLERS = [
 		if (!titleMatch || !bodyMatch) return null;
 
 		return {
-			value: -brlToFloat(bodyMatch[1]),
-			expenseName: `Pix para ${bodyMatch[2]}`,
-			paymentMethod: "Débito / Pix"
+			amount: -brlToFloat(bodyMatch[1]),
+			transaction: `Pix para ${bodyMatch[2]}`,
+			source: "Débito / Pix"
 		};
 	},
 
@@ -194,9 +195,9 @@ const HANDLERS = [
 		if (!titleMatch || !bodyMatch) return null;
 
 		return {
-			value: -brlToFloat(bodyMatch[1]),
-			expenseName: bodyMatch[2],
-			paymentMethod: "Caju"
+			amount: -brlToFloat(bodyMatch[1]),
+			transaction: bodyMatch[2],
+			source: "Caju"
 		};
 	},
 
@@ -208,9 +209,9 @@ const HANDLERS = [
 		if (!titleMatch || !bodyMatch) return null;
 
 		return {
-			value: brlToFloat(bodyMatch[1]),
-			expenseName: "Crédito Caju",
-			paymentMethod: "Caju"
+			amount: brlToFloat(bodyMatch[1]),
+			transaction: "Crédito Caju",
+			source: "Caju"
 		};
 	}
 ];
