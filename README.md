@@ -150,9 +150,9 @@ Fluxo recomendado:
 1. **Regex / estrutura** — Adicione entradas no mapa certo (ex.: `NU_NOTIFICATIONS` para Nubank), reutilizando `REGEX.brlValue` quando fizer sentido. Para outro app, um mapa novo (como `CAJU_NOTIFICATIONS`) mantém o mesmo estilo.
 2. **Categorização** — Se precisar normalizar nome ou categoria/descrição pela planilha, estenda `COMMON_NAME_MAP` e/ou `CATEGORY_MAP` conforme os handlers existentes.
 3. **Handler** — Inclua uma nova função no array `HANDLERS` em `notifications.gs` (no mesmo padrão dos existentes: `NuEstorno`, `CompraNuPay`, `CajuPagamento`, etc.).
-4. **Testes** — Adicione casos em `scripts/tests.gs` e rode `npm test`.
+4. **Testes** — Para **cada** novo handler, adicione pelo menos um `compare(buildRow(...), { ... })` em `scripts/tests.gs` (em uma função `test...` e chame-a a partir de `runTests()`, como nos testes atuais). Assim o comportamento fica fixado e o `npm test` cobre o caso.
 
-**Exemplo ilustrativo** (não copie cegamente: o formato exato dos grupos de captura depende dos seus regex):
+**Exemplo — mapa + handler** (`notifications.gs`; ajuste grupos de captura ao seu `title`/`body`):
 
 ```js
 // Dentro de NU_NOTIFICATIONS (ou outro mapa), defina title/body:
@@ -175,6 +175,28 @@ MinhaNovaRegra = (notification) => {
 		paymentMethod: "Crédito",
 	};
 },
+```
+
+**Exemplo — teste** (`tests.gs`):
+
+```js
+function testMinhaNovaRegra() {
+	compare(
+		buildRow({
+			title: "Título da notificação",
+			body: "Corpo da notificação",
+			app_name: "Nu",
+		}),
+		{
+			expenseName: "Nome esperado",
+			value: -16.57,
+			paymentMethod: "Crédito",
+		}
+	);
+}
+
+// Em runTests():
+//   testMinhaNovaRegra();
 ```
 
 O objeto retornado pelo handler é mesclado com `ROW_DEFAULTS` e com o resultado de `resolveCategoryAndDescription` em `post.gs` — em geral você só precisa dos campos que quer sobrescrever:
