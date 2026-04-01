@@ -1,17 +1,17 @@
 {
-  "devDependencies": {
-    "@types/google-apps-script": "^2.0.8",
-    "eslint": "^10.0.3"
-  },
-  "name": "sheetautomation",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "cd scripts && node -e \"$(cat utilities.gs notifications.gs tests.gs configs.gs post.gs)\""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+	"devDependencies": {
+		"@types/google-apps-script": "^2.0.8",
+		"eslint": "^10.0.3"
+	},
+	"name": "sheetautomation",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "cd scripts && node -e \"$(cat utilities.gs notifications.gs tests.gs configs.gs post.gs)\""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs"
 }
