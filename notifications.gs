@@ -15,6 +15,7 @@ const NU_NOTIFICATIONS = {
 	transferenciaReembolso: {
 		title: /(Transferência recebida|Reembolso recebido pelo Pix)/,
 		body: new RegExp(`Você recebeu um(?:a)? (transferência|reembolso) de R\\$ (${REGEX.brlValue}) de (.+)\\.`),
+		autoTransferenciaBody: new RegExp(`Recebemos sua transferência de R\\$ (${REGEX.brlValue})\\.`),
 	},
 	estorno: {
 		title: /Estorno/,
@@ -38,6 +39,10 @@ const CAJU_NOTIFICATIONS = {
 	pagamento: {
 		title: /Pagamento aprovado/,
 		body: new RegExp(`Compra de R\\$ (${REGEX.brlValue}) APROVADA em (.+) no CRÉDITO.`),
+	},
+	recebimento: {
+		title: /Seu Caju caiu!/,
+		body: new RegExp(`Oba! R\\$ (${REGEX.brlValue}) disponíveis no seu Caju. Aproveite`),
 	}
 }
 
@@ -65,12 +70,16 @@ const CATEGORY_MAP = [
 
 const COMMON_NAME_MAP = [
 	{
-		expenseName: "Passagem Metrô",
 		names: ["metro bh*bilhetagem di"],
+		expectedExpenseName: "Passagem Metrô",
 	},
 	{
-		expenseName: "Trailer PUC",
 		names: ["Viny Lanches"],
+		expectedExpenseName: "Trailer PUC",
+	},
+	{
+		names: ["Nexos Digital"],
+		expectedExpenseName: "Salário Nexos",
 	},
 ];
 
@@ -84,13 +93,26 @@ const HANDLERS = [
 		if (!titleMatch || !bodyMatch) return null;
 
 		let transfReembolso = capitalize(bodyMatch[1]);
-		if (transfReembolso == "Transferência") {
-			transfReembolso = "Pix"
-		}
+
+		transfReembolso = transfReembolso == "Transferência" ? "Pix" : transfReembolso;
 
 		return {
 			value: brlToFloat(bodyMatch[2]),
 			expenseName: `${transfReembolso} de ${bodyMatch[3]}`,
+			paymentMethod: "Débito / Pix",
+		};
+	},
+
+	NuAutoTransferencia = (notification) => {
+
+		const titleMatch = notification.title.match(NU_NOTIFICATIONS.transferenciaReembolso.title);
+		const bodyMatch = notification.body.match(NU_NOTIFICATIONS.transferenciaReembolso.autoTransferenciaBody);
+
+		if (!titleMatch || !bodyMatch) return null;
+
+		return {
+			value: brlToFloat(bodyMatch[1]),
+			expenseName: "Pix de Lucas Gualtieri",
 			paymentMethod: "Débito / Pix",
 		};
 	},
@@ -165,6 +187,20 @@ const HANDLERS = [
 		return {
 			value: -brlToFloat(bodyMatch[1]),
 			expenseName: bodyMatch[2],
+			paymentMethod: "Caju"
+		};
+	},
+
+	CajuRecebimento = (notification) => {
+
+		const titleMatch = notification.title.match(CAJU_NOTIFICATIONS.recebimento.title);
+		const bodyMatch = notification.body.match(CAJU_NOTIFICATIONS.recebimento.body);
+
+		if (!titleMatch || !bodyMatch) return null;
+
+		return {
+			value: brlToFloat(bodyMatch[1]),
+			expenseName: "Crédito Caju",
 			paymentMethod: "Caju"
 		};
 	}

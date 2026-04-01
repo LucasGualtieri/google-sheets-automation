@@ -60,7 +60,7 @@ function resolveCommonExpenseName(expenseName) {
 
 	const lower = expenseName.toLowerCase();
 
-	for (const { expenseName: normalizedExpenseName, names } of Object.values(COMMON_NAME_MAP)) {
+	for (const { expectedExpenseName: normalizedExpenseName, names } of Object.values(COMMON_NAME_MAP)) {
 		if (names.some(name => lower.includes(name.toLowerCase()))) {
 			return normalizedExpenseName;
 		}
