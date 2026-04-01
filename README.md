@@ -21,17 +21,54 @@ Notificação → HTTP POST → doPost() → handler → writeRow() → Google S
 
 ## Estrutura do projeto
 
+O código Apps Script fica em `scripts/`. O [clasp](https://github.com/google/clasp) envia essa pasta junto com o manifesto na raiz — o GAS continua vendo um único escopo global (sem imports entre arquivos).
+
 ```
-post.gs           — Entry point e lógica de construção de linhas
-configs.gs        — Configurações globais (SHEET_NAME, assert, constantes)
-notifications.gs  — Handlers para cada tipo de notificação
-utilities.gs      — Funções utilitárias (brlToFloat, compare, etc.)
-tests.gs          — Casos de teste, chamados via runTests()
-appsscript.json   — Manifesto do GAS
-.clasp.json       — Config do clasp (vincula ao projeto GAS)
-package.json      — Config do npm (dependências de dev, script de teste)
-.eslintrc.json    — Config do ESLint para ambiente GAS
+scripts/
+  post.gs             — doPost, buildRow, writeRow, categorização auxiliar
+  configs.gs          — SHEET_NAME, assert, etc.
+  notifications.gs    — REGEX, mapas de notificação, HANDLERS (handlers em si)
+  utilities.gs        — brlToFloat, compare, etc.
+  tests.gs            — runTests()
+appsscript.json       — Manifesto do GAS (runtime, webapp, fuso)
+.clasp.json.example   — Modelo do clasp; copiar para .clasp.json (não versionado)
+package.json          — npm: dependências de dev e comando de teste local
+package-lock.json     — Lockfile npm (reprodutibilidade)
+.eslintrc.json        — ESLint para ambiente GAS
+pushNdeploy.example.sh — Exemplo: push + deploy usando DEPLOYMENT_ID no ambiente
 ```
+
+---
+
+## Configuração local (clasp e deploy sem expor IDs no Git)
+
+O repositório versiona **modelos**; o que for específico da sua conta fica **fora** do Git (como no `.gitignore`):
+
+| Item | No repositório | No seu disco (não commitado) |
+|--------|---------|------------------------------|
+| ID do projeto Apps Script (`scriptId`) | `.clasp.json.example` | Copie para `.clasp.json` e preencha o ID (Projeto GAS → Configurações do projeto → IDs). |
+| ID da implantação do web app | — | `export DEPLOYMENT_ID='...'` ao usar o script de exemplo, ou um `pushNdeploy.sh` local copiado do `.example`. |
+
+Passos típicos após clonar:
+
+```bash
+cp .clasp.json.example .clasp.json
+# Edite .clasp.json e coloque o scriptId do seu projeto (ou do projeto compartilhado da equipe).
+npm install
+clasp login
+clasp push
+```
+
+Para deploy em uma implantação **versionada** fixa:
+
+```bash
+cp pushNdeploy.example.sh pushNdeploy.sh
+chmod +x pushNdeploy.sh
+# Opção A: export DEPLOYMENT_ID='...' && ./pushNdeploy.sh
+# Opção B: editar pushNdeploy.sh só na sua máquina (arquivo ignorado pelo Git)
+```
+
+Se esses IDs já entraram em commits antigos, considere tratá-los como expostos (novo deploy, ou revisar histórico com `git filter-repo`/BFG se a política do time exigir).
 
 ---
 
@@ -57,11 +94,13 @@ Instala `@types/google-apps-script` (autocomplete no VS Code) e `eslint`.
 
 ### Enviar código para o Google Apps Script
 
+Na **raiz** do repositório, com `.clasp.json` configurado:
+
 ```bash
 clasp push
 ```
 
-Sincroniza todos os arquivos `.gs` e `.json` locais com o projeto GAS vinculado (configurado em `.clasp.json`).
+Sincroniza `appsscript.json` e todos os `.gs` sob `scripts/` com o projeto vinculado (no modelo, `skipSubdirectories: false`, então subpastas entram no push).
 
 > **Atenção:** `clasp push` só atualiza o código do projeto — ele **não cria um novo deploy**. Se o seu web app estiver configurado com a opção **"Implantar a partir do código mais recente"** (head deployment), o push já torna o código ativo imediatamente. Caso seja um deploy versionado, também é necessário rodar `clasp deploy` para que a nova versão entre em produção.
 
@@ -81,9 +120,9 @@ Os testes rodam localmente via Node.js — sem precisar do ambiente GAS.
 npm test
 ```
 
-Concatena todos os arquivos `.gs` na ordem correta e os executa com Node. Resultados aparecem no console; falhas mostram um diff entre o esperado e o recebido.
+Concatena os `.gs` na ordem correta (a partir de `scripts/`) e executa com Node. Resultados aparecem no console; falhas mostram um diff entre o esperado e o recebido.
 
-> O test runner funciona carregando `utilities.gs` → `notifications.gs` → `tests.gs` → `configs.gs` → `post.gs` juntos, reproduzindo o comportamento do GAS que trata todos os arquivos como um escopo global único.
+> O test runner carrega `utilities.gs` → `notifications.gs` → `tests.gs` → `configs.gs` → `post.gs` juntos, reproduzindo o comportamento do GAS que trata todos os arquivos como um escopo global único.
 
 ---
 
@@ -91,49 +130,54 @@ Concatena todos os arquivos `.gs` na ordem correta e os executa com Node. Result
 
 O GAS trata todos os arquivos `.gs` do projeto como um único escopo global — não há imports. Para adicionar um novo arquivo:
 
-1. Crie um `seuarquivo.gs` na raiz do projeto.
-2. Adicione-o ao comando `cat` no script `test` do `package.json`, na ordem correta (antes de qualquer arquivo que dependa dele):
+1. Crie `scripts/seuarquivo.gs`.
+2. Adicione-o ao `cat` no script `test` do `package.json`, na ordem correta (antes de qualquer arquivo que dependa dele):
 
 ```json
-"test": "node -e \"$(cat utilities.gs notifications.gs seuarquivo.gs tests.gs configs.gs post.gs)\""
+"test": "cd scripts && node -e \"$(cat utilities.gs notifications.gs seuarquivo.gs tests.gs configs.gs post.gs)\""
 ```
 
-3. Rode `clasp push` para enviar ao GAS.
+3. Rode `npm test` e, em seguida, `clasp push` na raiz do projeto.
 
 ---
 
 ## Adicionando um novo handler de notificação
 
-1. **Adicione o padrão regex** em `NU_NOTIFICATIONS` no `post.gs`:
+A lógica vive em `scripts/notifications.gs`: constantes de regex (`NU_NOTIFICATIONS`, `CAJU_NOTIFICATIONS`, etc.), mapas opcionais (`CATEGORY_MAP`, `COMMON_NAME_MAP`) e o array **`HANDLERS`**, onde cada item é uma função que retorna `null` se não aplicar ou um objeto de linha se aplicar. `buildRow` em `post.gs` percorre **`HANDLERS` na ordem** — o **primeiro** handler que devolver dados ganha.
+
+Fluxo recomendado:
+
+1. **Regex / estrutura** — Adicione entradas no mapa certo (ex.: `NU_NOTIFICATIONS` para Nubank), reutilizando `REGEX.brlValue` quando fizer sentido. Para outro app, um mapa novo (como `CAJU_NOTIFICATIONS`) mantém o mesmo estilo.
+2. **Categorização** — Se precisar normalizar nome ou categoria/descrição pela planilha, estenda `COMMON_NAME_MAP` e/ou `CATEGORY_MAP` conforme os handlers existentes.
+3. **Handler** — Inclua uma nova função no array `HANDLERS` em `notifications.gs` (no mesmo padrão dos existentes: `NuEstorno`, `CompraNuPay`, `CajuPagamento`, etc.).
+4. **Testes** — Adicione casos em `scripts/tests.gs` e rode `npm test`.
+
+**Exemplo ilustrativo** (não copie cegamente: o formato exato dos grupos de captura depende dos seus regex):
 
 ```js
-const NU_NOTIFICATIONS = {
-    // ...padrões existentes...
-    minhaNovaNotificacao: {
-        title: /Regex do título aqui/,
-        body: /Regex do corpo aqui com (grupos de captura)/,
-    },
-};
+// Dentro de NU_NOTIFICATIONS (ou outro mapa), defina title/body:
+minhaNovaRegra: {
+	title: /Título esperado/,
+	body: /R\$ (\d[...]) em (.+)\./,
+},
+
+// Novo item em HANDLERS (ordem importa — mais específicos antes dos genéricos):
+MinhaNovaRegra = (notification) => {
+
+	const titleMatch = notification.title.match(NU_NOTIFICATIONS.minhaNovaRegra.title);
+	const bodyMatch = notification.body.match(NU_NOTIFICATIONS.minhaNovaRegra.body);
+
+	if (!titleMatch || !bodyMatch) return null;
+
+	return {
+		value: -brlToFloat(bodyMatch[1]),
+		expenseName: bodyMatch[2],
+		paymentMethod: "Crédito",
+	};
+},
 ```
 
-2. **Adicione a função handler** em `notifications.gs`:
-
-```js
-function MeuNovoHandler(notification) {
-    const titleMatch = notification.title.match(NU_NOTIFICATIONS.minhaNovaNotificacao.title);
-    const bodyMatch = notification.body.match(NU_NOTIFICATIONS.minhaNovaNotificacao.body);
-
-    if (!titleMatch || !bodyMatch) return null;
-
-    return {
-        value: -brlToFloat(bodyMatch[1]),
-        expenseName: bodyMatch[2],
-        paymentMethod: "Crédito",
-    };
-}
-```
-
-O objeto retornado é mesclado com `ROW_DEFAULTS` — só é necessário especificar os campos que quer sobrescrever. Campos disponíveis por padrão, mas você pode modificá-los para que faça sentido com a sua planilha:
+O objeto retornado pelo handler é mesclado com `ROW_DEFAULTS` e com o resultado de `resolveCategoryAndDescription` em `post.gs` — em geral você só precisa dos campos que quer sobrescrever:
 
 | Campo                | Padrão                         |
 |----------------------|--------------------------------|
@@ -144,32 +188,7 @@ O objeto retornado é mesclado com `ROW_DEFAULTS` — só é necessário especif
 | `expenseCategory`    | `""`                           |
 | `note`               | `"Added automatically."`       |
 
-3. **Registre o handler** no array `HANDLERS` em `post.gs`:
-
-```js
-const HANDLERS = [
-    NuReembolsoTransferencia,
-    NuEstorno,
-    CompraNuCreditoDebito,
-    MeuNovoHandler, // adicionar aqui
-];
-```
-
-4. **Adicione um caso de teste** em `tests.gs`:
-
-```js
-compare(buildRow({
-    title: "Título da notificação",
-    body: "Corpo da notificação",
-    app_name: "Nu"
-}), {
-    expenseName: "Nome esperado",
-    value: -16.57,
-    paymentMethod: "Crédito",
-});
-```
-
-5. Rode `npm test` para verificar, depois `clasp push` para publicar e `clasp deploy` pra atualizar a versão ativa.
+Depois: `npm test`, `clasp push` e, se usar deploy versionado, `clasp deploy` ou o script de deploy com `DEPLOYMENT_ID`.
 
 ---
 
