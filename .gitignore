@@ -1,1 +1,11 @@
-node_modules/
+# Ignore everything
+*
+
+# But not this folder
+!scripts/
+
+# And not its contents
+!scripts/**
+
+!.gitignore
+!README.md

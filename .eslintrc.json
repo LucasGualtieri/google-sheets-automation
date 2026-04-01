@@ -1,8 +1,0 @@
-{
-	"env": {
-		"googleappsscript": true
-	},
-	"rules": {
-		"no-undef": "error"
-	}
-}
