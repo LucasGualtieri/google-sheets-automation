@@ -53,6 +53,11 @@ const CATEGORY_MAP = [
 		names: ["uber", "99"]
 	},
 	{
+		expenseDescription: "Academia",
+		expenseCategory: "Fixed Expense",
+		names: ["academia"]
+	},
+	{
 		expenseDescription: "Alimentação",
 		expenseCategory: "",
 		names: ["lanches", "ifood", "restaurante"],
@@ -80,6 +85,10 @@ const COMMON_NAME_MAP = [
 	{
 		names: ["Nexos Digital"],
 		expectedExpenseName: "Salário Nexos",
+	},
+	{
+		names: ["SUA ACADEMIA"],
+		expectedExpenseName: "Smart Fit",
 	},
 ];
 
