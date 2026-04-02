@@ -17,9 +17,12 @@ function doPost(e) {
 }
 
 function writeRow(row) {
+
 	const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
 	const range = sheet.getRange(2, 1, 1, Object.keys(row).length);
+
 	range.insertCells(SpreadsheetApp.Dimension.ROWS);
+
 	range.setValues([[
 		row.transaction,
 		row.amount,
@@ -58,11 +61,16 @@ function row(notification, handlerFunction) {
 
 function resolveCommonTransactionName(transactionName) {
 
-	const lower = transactionName.toLowerCase();
+	const lowerCaseTransactionName = transactionName.toLowerCase();
 
-	for (const { expectedTransaction: normalizedTransaction, gotTransactionNames } of Object.values(COMMON_NAME_MAP)) {
-		if (gotTransactionNames.some(name => lower.includes(name.toLowerCase()))) {
-			return normalizedTransaction;
+	for (const { expectedTransaction, gotTransactionNames } of Object.values(COMMON_NAME_MAP)) {
+
+		const isMatch = gotTransactionNames.some(
+			name => lowerCaseTransactionName.includes(name.toLowerCase())
+		);
+
+		if (isMatch) {
+			return expectedTransaction;
 		}
 	}
 
@@ -71,15 +79,20 @@ function resolveCommonTransactionName(transactionName) {
 
 function resolveCategoryAndType(transactionName) {
 
-	const lower = transactionName.toLowerCase();
+	const transactionNameLower = transactionName.toLowerCase();
 
 	for (const { type, category, names } of Object.values(CATEGORY_MAP)) {
-		if (names.some(name => lower.includes(name.toLowerCase()))) {
+
+		const isMatch = names.some(
+			name => transactionNameLower.includes(name.toLowerCase())
+		);
+
+		if (isMatch) {
 			return { type, category };
 		}
 	}
 
-	return { type: "", category: "" };
+	return null;
 }
 
 runTests();

@@ -128,6 +128,8 @@ function testCaju() {
 			transaction: "Crédito Caju",
 			amount: 200,
 			source: "Caju",
+			category: "Income",
+			type: "Fixed Income",
 		}
 	);
 }
@@ -143,6 +145,8 @@ function testIncoming() {
 			transaction: "Pix de Fulano de Teste",
 			amount: 1300.35,
 			source: "Débito / Pix",
+			category: "Income",
+			type: "Transfer",
 		}
 	);
 
@@ -155,6 +159,8 @@ function testIncoming() {
 			transaction: "Salário Nexos",
 			amount: 1800.00,
 			source: "Débito / Pix",
+			category: "Income",
+			type: "Fixed Income",
 		}
 	);
 
@@ -167,6 +173,8 @@ function testIncoming() {
 			transaction: "Pix de Lucas Gualtieri",
 			amount: 108.28,
 			source: "Débito / Pix",
+			category: "Income",
+			type: "Transfer",
 		}
 	);
 
@@ -179,6 +187,8 @@ function testIncoming() {
 			transaction: "Reembolso de Fulano de Teste",
 			amount: 20.35,
 			source: "Débito / Pix",
+			category: "Income",
+			type: "Transfer",
 		}
 	);
 

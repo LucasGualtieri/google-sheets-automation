@@ -60,7 +60,7 @@ const CATEGORY_MAP = [
 	{
 		category: "Alimentação",
 		type: "",
-		names: ["lanches", "ifood", "restaurante"],
+		names: [ "lanches", "ifood", "restaurante" ],
 	},
 	{
 		category: "Assinaturas",
@@ -69,8 +69,13 @@ const CATEGORY_MAP = [
 	},
 	{
 		category: "Metrô / Ônibus",
-		type: "",
+		type: "Variable Expense",
 		names: ["metro bh*bilhetagem di"],
+	},
+	{
+		category: "Income",
+		type: "Fixed Income",
+		names: ["Nexos Digital"],
 	},
 ];
 
@@ -110,6 +115,8 @@ const HANDLERS = [
 			amount: brlToFloat(bodyMatch[2]),
 			transaction: `${transfReembolso} de ${bodyMatch[3]}`,
 			source: "Débito / Pix",
+			category: "Income",
+			type: "Transfer"
 		};
 	},
 
@@ -124,6 +131,8 @@ const HANDLERS = [
 			amount: brlToFloat(bodyMatch[1]),
 			transaction: "Pix de Lucas Gualtieri",
 			source: "Débito / Pix",
+			category: "Income",
+			type: "Transfer"
 		};
 	},
 
@@ -138,6 +147,8 @@ const HANDLERS = [
 			amount: brlToFloat(bodyMatch[2]),
 			transaction: `Estorno em ${bodyMatch[1]}`,
 			source: "Crédito",
+			category: "Income",
+			type: "Variable Income"
 		};
 	},
 
@@ -211,7 +222,9 @@ const HANDLERS = [
 		return {
 			amount: brlToFloat(bodyMatch[1]),
 			transaction: "Crédito Caju",
-			source: "Caju"
+			source: "Caju",
+			category: "Income",
+			type: "Fixed Income"
 		};
 	}
 ];
