@@ -40,6 +40,10 @@ const CAJU_NOTIFICATIONS = {
 		title: /Pagamento aprovado/,
 		body: new RegExp(`Compra de R\\$ (${REGEX.brlValue}) APROVADA em (.+) no CRÉDITO.`),
 	},
+	pagamentoVoucher: {
+		title: /Pagamento aprovado/,
+		body: new RegExp(`Compra de R\\$ (${REGEX.brlValue}) APROVADA em (.+) em (.+) no VOUCHER.`),
+	},
 	recebimento: {
 		title: /Seu Caju caiu!/,
 		body: new RegExp(`Oba! R\\$ (${REGEX.brlValue}) disponíveis no seu Caju. Aproveite`),
@@ -60,7 +64,7 @@ const CATEGORY_MAP = [
 	{
 		category: "Alimentação",
 		type: "",
-		names: [ "lanches", "ifood", "restaurante" ],
+		names: [ "lanches", "ifood", "restaurante", "Ifd" ],
 	},
 	{
 		category: "Assinaturas",
@@ -209,6 +213,21 @@ const HANDLERS = [
 			amount: -brlToFloat(bodyMatch[1]),
 			transaction: bodyMatch[2],
 			source: "Caju"
+		};
+	},
+
+	CajuPagamentoVoucher = (notification) => {
+
+		const titleMatch = notification.title.match(CAJU_NOTIFICATIONS.pagamentoVoucher.title);
+		const bodyMatch = notification.body.match(CAJU_NOTIFICATIONS.pagamentoVoucher.body);
+
+		if (!titleMatch || !bodyMatch) return null;
+
+		return {
+			amount: -brlToFloat(bodyMatch[1]),
+			transaction: bodyMatch[3],
+			source: "Caju",
+			category: "Alimentação"
 		};
 	},
 

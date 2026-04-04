@@ -121,6 +121,18 @@ function testCaju() {
 
 	compare(
 		buildRow({
+			title: "Pagamento aprovado",
+			body: "Compra de R$ 32,99 APROVADA em ALIMENTAÇÃO em Ifd*shirley Fraguas Me Teste no VOUCHER.",
+		}),
+		{
+			transaction: "Ifd*shirley Fraguas Me Teste",
+			amount: -32.99,
+			source: "Caju",
+		}
+	);
+
+	compare(
+		buildRow({
 			title: "Seu Caju caiu!",
 			body: "Oba! R$ 200,00 disponíveis no seu Caju. Aproveite!",
 		}),

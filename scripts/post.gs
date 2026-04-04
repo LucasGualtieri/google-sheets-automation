@@ -18,7 +18,9 @@ function doPost(e) {
 
 function writeRow(row) {
 
-	const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+	const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
+		getSheetName() + " Novo"
+	);
 	const range = sheet.getRange(2, 1, 1, Object.keys(row).length);
 
 	range.insertCells(SpreadsheetApp.Dimension.ROWS);
